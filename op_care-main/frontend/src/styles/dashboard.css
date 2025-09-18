@@ -1,0 +1,190 @@
+/* General Layout */
+.dashboard-container {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  background: #f8fafc;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Header (centered, not full width) */
+/* Header (full width across page) */
+.dashboard-header {
+  background: linear-gradient(135deg, #30b88f, #07a96d);
+  color: #fff;
+  padding: 25px 0; /* top & bottom spacing */
+  border-radius: 0; /* remove rounded edges so it spans fully */
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  animation: fadeDown 0.6s ease;
+  width: 100%; /* take full width */
+  margin: 0; /* remove auto centering */
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.dashboard-header p {
+  margin: 8px 0 0;
+  font-size: 18px;
+  opacity: 0.9;
+}
+
+/* Cards Grid (full width across the page) */
+.dashboard-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* keeps equal spacing */
+  gap: 22px;
+  width: 100%; /* full width */
+  padding: 0 20px; /* little side padding */
+  box-sizing: border-box;
+}
+
+/* Card Style */
+.dashboard-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp 0.6s ease;
+  flex: 1 1 280px; /* flexible width */
+  max-width: 320px; /* prevents over-stretching */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Active card expands slightly */
+.dashboard-card.active {
+  border: 2px solid #2563eb;
+  transform: scale(1.03);
+}
+
+/* Card Image (rectangular banner style) */
+.card-icon {
+  width: 100%;
+  height: 160px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  background: #f3f4f6;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+/* Zoom effect on hover */
+.dashboard-card:hover .card-icon img {
+  transform: scale(1.05);
+}
+
+/* Card Text */
+.dashboard-card h2 {
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: #1e3a8a;
+}
+
+.dashboard-card p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+/* Card Details */
+.card-details {
+  margin-top: 15px;
+  padding: 12px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  animation: slideDown 0.4s ease;
+}
+
+.card-details ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card-details li {
+  padding: 6px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.card-details li:last-child {
+  border-bottom: none;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .dashboard-header h1 {
+    font-size: 22px;
+  }
+  .dashboard-card {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+  .dashboard-card h2 {
+    font-size: 18px;
+  }
+}

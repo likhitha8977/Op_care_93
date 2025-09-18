@@ -1,0 +1,155 @@
+.bookings-container {
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.bookings-container h2 {
+  color: #2a7be4;
+}
+.bookings-container p {
+  color: #666;
+  font-size: 1rem;
+}
+.bookings-list {
+  list-style: none;
+  padding: 0;
+}
+.booking-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0.5rem 0;
+  background: #f3f7ff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+.cancel-btn {
+  background: #e43a2a;
+  color: #fff;
+  border: none;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+.cancel-btn:hover {
+  background: #a81f13;
+}
+
+/* Hospital Types & List */
+.hospital-types {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  color: #195a9a;
+}
+.hospitals-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.hospital-card {
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 1rem;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.2s;
+}
+.hospital-card:hover {
+  box-shadow: 0 6px 20px rgba(27,109,69,0.12);
+}
+.hospital-img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+.hospital-info h3 {
+  margin: 0.5rem 0;
+  color: #2a7be4;
+}
+.hospital-info p {
+  margin: 0.2rem 0;
+  color: #444;
+}
+.view-btn, .book-btn {
+  margin: 0.5rem 0.5rem 0 0;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.view-btn {
+  background: #e2e8f0;
+  color: #195a9a;
+}
+.view-btn:hover {
+  background: #b6c6d6;
+}
+.book-btn {
+  background: #2a7be4;
+  color: #fff;
+}
+.book-btn:hover {
+  background: #195a9a;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(27,109,69,0.18);
+  min-width: 320px;
+  max-width: 90vw;
+}
+.op-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.op-form label {
+  font-size: 1rem;
+  color: #195a9a;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.op-form input {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #b6c6d6;
+  font-size: 1rem;
+}
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.success-message {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: 500;
+}

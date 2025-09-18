@@ -1,0 +1,54 @@
+/* Profile Container */
+.profile-container {
+  padding: 2rem;
+  background: linear-gradient(145deg, #d6f6ea, #c9efde);
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  max-width: 420px;
+  margin: 2.5rem auto;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.profile-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px #45b8861f;
+}
+.body{
+  background-color: #d6f6ea;
+}
+/* Profile Heading (Optional if you add a name/title) */
+.profile-container h2 {
+  font-size: 1.8rem;
+  color: #222;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Profile Details */
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.profile-details p {
+  font-size: 1rem;
+  color: #444;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: #b1eede8b;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.profile-details p:hover {
+  background: #9ef5e971;
+}
+
+/* Highlight important info (like email/username) */
+.profile-details strong {
+  color: #0b1b05df;
+  font-weight: 600;
+}
