@@ -143,4 +143,6 @@ input:focus,
 select:focus {
   outline: 2px solid #3dd1d1;
   outline-offset: 2px;
+  border-radius: 4px;
+  box-shadow: none;
 }
