@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 // Accept notification setter as prop
 import '../styles/bookings.css';
@@ -15,7 +15,8 @@ const hospitalTypes = [
   'Chain',
 ];
 
-const hospitals = [
+// Fallback static hospitals list (used only if API is unavailable)
+const hospitalsFallback = [
   // Andhra Pradesh
   {
     name: 'AIIMS Mangalagiri',
@@ -74,7 +75,7 @@ const hospitals = [
     type: 'Private Multi-specialty',
     image: '/hospital.webp',
     city: 'Visakhapatnam',
-    details: 'Multi-specialty (~200+ beds), services include Internal Medicine, Cardiology, Neurology, ENT, Pulmonology, General Surgery.',
+    details: 'Multi-specialty (~200+ beds), services include Internal Medicine, Cardiology, Neurology, ENT, Pulmonology, General Surgery.Clean and modern infrastructure, with emphasis on patient safety, service excellence.Emergency: open 24 hours every day',
     facilities: [
       'Internal Medicine', 'Cardiology', 'Neurology', 'ENT', 'Pulmonology', 'General Surgery'
     ],
@@ -87,7 +88,7 @@ const hospitals = [
     type: 'Cancer & Critical Care',
     image: '/hospital.jpeg',
     city: 'Kakinada',
-    details: 'Cancer care, Cardiology, ICU, General Medicine, Diabetology (~150 beds).',
+    details: 'Cancer care, Cardiology, ICU, General Medicine, Diabetology (~150 beds).Has qualified doctors, and a team of over 100 professionals (doctors, support staff) involved.Clean and modern infrastructure, with emphasis on patient safety, service excellence.Emergency: open 24 hours every day' ,
     facilities: [
       'Cancer Care', 'Cardiology', 'ICU', 'General Medicine', 'Diabetology'
     ],
@@ -114,7 +115,7 @@ const hospitals = [
     type: 'Pediatric & Maternal Care Chain',
     image: '/hospital.webp',
     city: 'Hyderabad',
-    details: 'Pediatric & maternal care chain (Hyderabad-based, ≈19 hospitals & 3 clinics), services in Paediatric care, Neonatal care, Maternity, Women’s health, Fertility & Outpatient.',
+    details: 'Pediatric & maternal care chain (Hyderabad-based, ≈19 hospitals & 3 clinics), services in Paediatric care, Neonatal care, Maternity, Women’s health, Fertility & Outpatient.Clean and modern infrastructure, with emphasis on patient safety, service excellence.Emergency: open 24 hours every day',
     facilities: [
       'Paediatric Care', 'Neonatal Care', 'Maternity', 'Women’s Health', 'Fertility', 'Outpatient'
     ],
@@ -245,7 +246,7 @@ const Bookings = ({ setNotification }) => {
   const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
   const [selectedHospital, setSelectedHospital] = useState(null);
-  const [formData, setFormData] = useState({ name: '', age: '', service: '', date: '' });
+  const [formData, setFormData] = useState({ name: '', age: '', service: '', date: '', consultationType: 'in_person' });
   const [submitted, setSubmitted] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [detailsHospital, setDetailsHospital] = useState(null);
@@ -254,11 +255,26 @@ const Bookings = ({ setNotification }) => {
   const [filterType, setFilterType] = useState("");
   const [filterSpecialty, setFilterSpecialty] = useState("");
   const [filterRating, setFilterRating] = useState("");
+  const [apiHospitals, setApiHospitals] = useState([]);
+
+  // Load hospitals from backend
+  React.useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch('/api/hospitals');
+        const data = await res.json();
+        if (Array.isArray(data) && data.length) setApiHospitals(data);
+      } catch (e) {
+        console.warn('Hospitals API unavailable, using fallback list');
+      }
+    };
+    load();
+  }, []);
 
   const handleBookClick = (hospital) => {
     setSelectedHospital(hospital);
     setShowForm(true);
-    setFormData({ name: '', age: '', service: '', date: '' });
+    setFormData({ name: '', age: '', service: '', date: '', consultationType: 'in_person' });
     setSubmitted(false);
   };
 
@@ -280,6 +296,7 @@ const Bookings = ({ setNotification }) => {
       hospital: selectedHospital?._id || selectedHospital?.name,
       service: formData.service,
       date: formData.date,
+      consultationType: formData.consultationType,
       name: formData.name,
       age: formData.age
     };
@@ -308,11 +325,13 @@ const Bookings = ({ setNotification }) => {
   };
 
   // Filter hospitals by search
+  const hospitals = apiHospitals.length ? apiHospitals : hospitalsFallback;
+
   const filteredHospitals = hospitals.filter(hospital => {
     const matchesSearch = hospital.name.toLowerCase().includes(search.toLowerCase()) || hospital.city.toLowerCase().includes(search.toLowerCase());
     const matchesCity = filterCity ? hospital.city === filterCity : true;
     const matchesType = filterType ? hospital.type === filterType : true;
-    const matchesSpecialty = filterSpecialty ? hospital.services.includes(filterSpecialty) : true;
+    const matchesSpecialty = filterSpecialty ? (hospital.services || []).includes(filterSpecialty) : true;
     // For demo, assume all ratings are 4 or 5
     const matchesRating = filterRating ? (filterRating === '5' ? true : true) : true;
     return matchesSearch && matchesCity && matchesType && matchesSpecialty && matchesRating;
@@ -413,6 +432,13 @@ const Bookings = ({ setNotification }) => {
               <label>
                 Age:
                 <input type="number" name="age" value={formData.age} onChange={handleFormChange} required />
+              </label>
+              <label>
+                Consultation Type:
+                <select name="consultationType" value={formData.consultationType} onChange={handleFormChange}>
+                  <option value="in_person">In-Person</option>
+                  <option value="video">Video Consultation</option>
+                </select>
               </label>
               <label>
                 Service:

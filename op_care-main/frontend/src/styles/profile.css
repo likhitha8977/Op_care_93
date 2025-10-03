@@ -1,54 +1,214 @@
-/* Profile Container */
-.profile-container {
-  padding: 2rem;
-  background: linear-gradient(145deg, #d6f6ea, #c9efde);
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  max-width: 420px;
-  margin: 2.5rem auto;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+:root {
+  /* Adjust this to your actual fixed header height */
+  --header-height: 64px;
 }
 
-.profile-container:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 24px #45b8861f;
-}
-.body{
-  background-color: #d6f6ea;
-}
-/* Profile Heading (Optional if you add a name/title) */
-.profile-container h2 {
-  font-size: 1.8rem;
-  color: #222;
-  text-align: center;
-  margin-bottom: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
-/* Profile Details */
-.profile-details {
+/* Profile Layout with Sidebar */
+.profile-layout {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.profile-main {
+  flex: 1;
+  margin-left: 220px; /* Same as sidebar width */
+  padding: 2rem;
+  /* Ensure content starts below the fixed header */
+  padding-top: calc(2rem + var(--header-height));
+  background-color: #f5f5f5;
+}
+
+.profile-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+}
+
+.profile-container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
 }
 
 .profile-details p {
+  margin: 0.5rem 0;
   font-size: 1rem;
-  color: #444;
-  margin: 0;
-  padding: 0.5rem 0.75rem;
-  background: #b1eede8b;
-  border-radius: 6px;
-  transition: background 0.2s ease;
 }
 
-.profile-details p:hover {
-  background: #9ef5e971;
+.profile-form label {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-weight: bold;
 }
 
-/* Highlight important info (like email/username) */
-.profile-details strong {
-  color: #0b1b05df;
-  font-weight: 600;
+.profile-form input {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  margin-top: 0.3rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.book-btn {
+  padding: 0.5rem 1.2rem;
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.book-btn:hover {
+  background-color: #45a049;
+}
+
+.cancel-btn {
+  padding: 0.5rem 1.2rem;
+  background-color: #f44336;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background-color: #d32f2f;
+}
+
+.error-msg {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.bmi-heading {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.bmi-result {
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 0.5rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+}
+
+.bmi-result.underweight {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.bmi-result.normal-weight {
+  background-color: #e8f5e8;
+  color: #388e3c;
+}
+
+.bmi-result.overweight {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+.bmi-result.obese {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+/* Content Sections Styling */
+.profile-main h2 {
+  color: #333;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #4f46e5;
+}
+
+.profile-main > div {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.profile-main ul {
+  list-style: none;
+  padding: 0;
+}
+
+.profile-main ul li {
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #4f46e5;
+  transition: all 0.3s ease;
+}
+
+.profile-main ul li:hover {
+  background-color: #e9ecef;
+  transform: translateX(5px);
+}
+
+.profile-details {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-layout {
+    flex-direction: column;
+  }
+  
+  .profile-main {
+    margin-left: 0;
+    padding: 1rem;
+  }
+  
+  .sidenav {
+    width: 100%;
+    position: relative;
+    min-height: auto;
+    box-shadow: none;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .sidenav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .sidenav ul li {
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+    margin-bottom: 0;
+  }
+  
+  .profile-main > div {
+    padding: 1rem;
+  }
+  
+  .buttons {
+    flex-direction: column;
+  }
+  
+  .book-btn, .cancel-btn {
+    width: 100%;
+  }
 }

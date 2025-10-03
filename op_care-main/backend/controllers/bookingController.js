@@ -7,8 +7,15 @@ exports.getBookings = async (req, res, next) => {
 };
 exports.createBooking = async (req, res, next) => {
   try {
-    const { hospital, service, date } = req.body;
-    const booking = await Booking.create({ user: req.userId, hospital, service, date });
+    const { hospital, service, date, consultationType } = req.body;
+    const payload = { user: req.userId, hospital, service, date };
+    if (consultationType && (consultationType === 'video' || consultationType === 'in_person')) {
+      payload.consultationType = consultationType;
+      if (consultationType === 'video') {
+        payload.videoStatus = 'pending';
+      }
+    }
+    const booking = await Booking.create(payload);
     res.status(201).json(booking);
   } catch (err) { next(err); }
 };

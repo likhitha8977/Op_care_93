@@ -17,6 +17,8 @@ app.use(
   })
 );
 app.use(express.json());
+// Serve uploaded files
+app.use('/uploads', express.static('uploads'));
 
 // Session middleware (required for Passport)
 app.use(
@@ -77,6 +79,8 @@ const bookingRoutes = require("./routes/bookings");
 const profileRoutes = require("./routes/profile");
 const recordRoutes = require("./routes/records");
 const notificationRoutes = require("./routes/notifications");
+const adminRoutes = require("./routes/admin");
+const doctorRoutes = require("./routes/doctor");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/hospitals", hospitalRoutes);
@@ -84,10 +88,15 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/records", recordRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/doctor", doctorRoutes);
 
 // Error handler
 app.use((err, req, res, next) => {
-  res.status(err.status || 500).json({ error: err.message });
+  // Log detailed error to server console for debugging
+  console.error('Error:', err && err.message);
+  if (err && err.stack) console.error(err.stack);
+  res.status(err.status || 500).json({ error: err.message || 'Server error' });
 });
 
 mongoose

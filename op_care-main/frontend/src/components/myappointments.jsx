@@ -96,21 +96,35 @@ const MyAppointments = () => {
             <li className="booking-item" key={appt._id || idx}>
               {editIdx === idx ? (
                 <form onSubmit={handleEditSubmit} style={{display:'flex',gap:'1rem',alignItems:'center'}}>
-                  <input name="name" value={editData.name} onChange={handleEditChange} required />
-                  <input name="age" value={editData.age} onChange={handleEditChange} required type="number" style={{width:'60px'}} />
-                  <input name="service" value={editData.service} onChange={handleEditChange} required />
+                  <input name="service" value={editData.service} onChange={handleEditChange} required placeholder="Service" />
                   <input name="date" value={editData.date} onChange={handleEditChange} required type="date" />
                   <button type="submit" className="book-btn">Save</button>
                   <button type="button" className="cancel-btn" onClick={()=>setEditIdx(null)}>Cancel</button>
                 </form>
               ) : (
-                <>
-                  <span><strong>{appt.name}</strong> ({appt.age}) - {appt.service} @ {appt.hospital} on {appt.date}</span>
+                <div>
+                  <div style={{ display:'flex', flexDirection:'column', gap:'0.25rem' }}>
+                    <span>
+                      <strong>{appt.service}</strong>
+                      {` @ ${appt?.hospital?.name || (typeof appt.hospital === 'string' ? appt.hospital : 'Hospital')}`}
+                      {` on ${appt.date}`}
+                    </span>
+                    <span>
+                      <em>Status: {appt.status || 'booked'}</em>
+                      {` | Type: ${appt.consultationType || 'in_person'}`}
+                      {appt.consultationType === 'video' && appt.videoLink && (
+                        <>
+                          {` | `}
+                          <a href={appt.videoLink} target="_blank" rel="noreferrer">Join Video</a>
+                        </>
+                      )}
+                    </span>
+                  </div>
                   <div>
                     <button className="view-btn" onClick={()=>handleEdit(idx)}>Reschedule</button>
                     <button className="cancel-btn" onClick={()=>handleCancel(idx)}>Cancel</button>
                   </div>
-                </>
+                </div>
               )}
             </li>
           ))}

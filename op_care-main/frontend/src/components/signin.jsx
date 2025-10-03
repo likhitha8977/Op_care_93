@@ -16,17 +16,28 @@ export default function SignIn() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
+
       const data = await res.json();
+
       if (res.ok) {
-        // Save token and all user info for profile
+        // Save user + token in context
         login({
           fullName: data.user.fullName,
           email: data.user.email,
           phone: data.user.phone,
-          token: data.token
+          role: data.user.role,
+          token: data.token,
         });
+
         alert(`Welcome back, ${data.user.fullName}!`);
-        navigate("/profile");
+        // Redirect by role
+        if (data.user.role === "admin") {
+          navigate("/admin-dashboard");
+        } else if (data.user.role === "doctor") {
+          navigate("/doctor");
+        } else {
+          navigate("/profile");
+        }
       } else {
         alert(data.error || "Login failed");
       }
@@ -37,8 +48,6 @@ export default function SignIn() {
 
   return (
     <>
-  {/* Header removed, global Navbar used */}
-
       <main className="auth-wrapper">
         <div className="auth-card">
           <div className="auth-image">
@@ -86,10 +95,23 @@ export default function SignIn() {
                 <button
                   type="button"
                   className="google-btn"
-                  style={{background:'#fff',border:'1px solid #ccc',borderRadius:'6px',padding:'0.5rem 1rem',display:'flex',alignItems:'center',gap:'0.5rem',cursor:'pointer'}}
-                  onClick={() => window.location.href = '/api/auth/google'}
+                  style={{
+                    background: "#fff",
+                    border: "1px solid #ccc",
+                    borderRadius: "6px",
+                    padding: "0.5rem 1rem",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => (window.location.href = "/api/auth/google")}
                 >
-                  <img src="/google.png" alt="Google" style={{height:'24px'}} />
+                  <img
+                    src="/google.png"
+                    alt="Google"
+                    style={{ height: "24px" }}
+                  />
                   Sign in with Google
                 </button>
               </div>

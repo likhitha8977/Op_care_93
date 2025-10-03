@@ -1,0 +1,60 @@
+/* Sidebar Container */
+.sidenav {
+  width: 220px;
+  background-color: #59cbab;
+  color: #fff;
+  padding: 20px;
+  min-height: calc(100vh - var(--header-height, 0px));
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  position: fixed; /* keeps sidebar fixed */
+  top: var(--header-height, 0px);
+  left: 0;
+  transition: all 0.3s ease;
+}
+
+/* Sidebar Heading */
+.sidenav h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #f5f5f5;
+}
+
+/* Sidebar List */
+.sidenav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Sidebar List Items */
+.sidenav ul li {
+  padding: 12px 15px;
+  margin-bottom: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Hover Effect */
+.sidenav ul li:hover {
+  background-color: #1e1f10;
+}
+
+/* Active Tab */
+.sidenav ul li.active {
+  background-color: #efeef6;
+  color: #2e2727;
+  font-weight: bold;
+}
+
+/* Responsive Sidebar */
+@media (max-width: 768px) {
+  .sidenav {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+    box-shadow: none;
+    top: 0; /* reset top when relative */
+    margin-top: var(--header-height, 0px); /* ensure it appears below fixed header */
+  }
+}

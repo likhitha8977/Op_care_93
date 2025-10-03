@@ -18,19 +18,21 @@ export default function SignUp() {
       return;
     }
     try {
-      const res = await fetch("http://localhost:5000/api/auth/signup", {
+      const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fullName, email, password, phone, role }),
         credentials: "include", // add this if you want cookies/session
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); } catch { data = { message: text }; }
       if (res.ok) {
         alert("Signup successful! Please login.");
         navigate("/signin");
       } else {
-        alert(data.error || "Signup failed");
+        alert(data.error || data.message || `Signup failed (status ${res.status})`);
       }
     } catch (err) {
       alert("Signup error: " + err.message);

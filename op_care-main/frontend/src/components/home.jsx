@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 import "../styles/home.css";
 
 function Home() {
+  const { user } = useContext(UserContext);
+  const targetPath = user
+    ? (user.role === 'admin' ? '/admin-dashboard' : user.role === 'doctor' ? '/doctor' : '/signin')
+    : '/signin';
   return (
     <div>
       {/* Header */}
@@ -16,7 +21,7 @@ function Home() {
             Say goodbye to long queues and manual hospital registrations. OPcare
             makes outpatient registration <b>fast, easy, and digital</b>.
           </p>
-          <Link to="/signin" className="btn">
+          <Link to={targetPath} className="btn">
             Get Started
           </Link>
         </div>

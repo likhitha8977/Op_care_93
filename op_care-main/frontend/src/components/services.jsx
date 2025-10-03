@@ -1,72 +1,114 @@
-import React from 'react';
-import "../styles/services.css"; // Assuming you have a CSS file for styles
+import React from "react";
+import "../styles/services.css";
+
+
+const services = [
+  {
+    title: "Smart Booking & Queue Management",
+    description: [
+      "Real-time queue status",
+      "Priority booking for emergencies/seniors",
+      "Auto-rescheduling if doctor unavailable",
+    ],
+  },
+  {
+    title: "Hospital & Doctor Finder",
+    description: [
+      "AI-powered hospital recommendations",
+      "Filter by facilities & specialties",
+      "Compare hospitals (fees, ratings, services)",
+    ],
+  },
+  {
+    title: "Telemedicine & Virtual OP",
+    description: [
+      "Online video consultations",
+      "Digital prescriptions",
+      "Chat follow-ups with doctors",
+    ],
+  },
+  {
+    title: "Patient Health Dashboard",
+    description: [
+      "Store prescriptions & lab results",
+      "View health insights & graphs",
+      "Medication & checkup reminders",
+    ],
+  },
+  {
+    title: "Pharmacy Integration",
+    description: [
+      "Order medicines online",
+      "Home delivery options",
+      "Refill reminders",
+    ],
+  },
+  {
+    title: "Lab Tests & Reports",
+    description: [
+      "Book diagnostic tests online",
+      "Track lab reports",
+      "Share reports with doctors",
+    ],
+  },
+  {
+    title: "Smart Emergency Response",
+    description: [
+      "One-tap SOS alerts",
+      "Live location sharing",
+      "Blood bank availability",
+    ],
+  },
+  {
+    title: "Insurance & Billing",
+    description: [
+      "Cashless OPD with insurance",
+      "Track claims & approvals",
+      "Transparent billing",
+    ],
+  },
+  {
+    title: "Notifications & Reminders",
+    description: [
+      "Booking confirmations",
+      "Medicine reminders",
+      "Wellness & health tips",
+    ],
+  },
+  {
+    title: "Community & Support",
+    description: [
+      "Patient support helpline",
+      "Health blogs & awareness",
+      "Doctor & hospital ratings",
+    ],
+  },
+];
+
 const Services = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white">Hospital Services</h1>
-          <p className="mt-2 text-gray-300">
-            Explore the broad range of services offered by modern hospitals.
+    <div className="services-section">
+      <div className="container">
+        <header className="services-header">
+          <h1>Our Healthcare Services</h1>
+          <p>
+            Explore the wide range of smart healthcare services offered by
+            OpCare to improve patient convenience and well-being.
           </p>
-        </div>
-        <div className="bg-gray-800 rounded-lg border border-gray-700 p-8">
-          <div className="prose prose-invert max-w-none">
-            <h2 className="text-2xl font-semibold text-white mb-4">Main Service Categories</h2>
-            <ul className="list-disc list-inside text-gray-300 mb-6 space-y-2">
-              <li><strong>Medical Services</strong>
-                <ul className="list-disc ml-6">
-                  <li>General Medicine</li>
-                  <li>Emergency & Trauma Care</li>
-                  <li>Intensive Care Unit (ICU), Neonatal ICU (NICU), Pediatric ICU (PICU)</li>
-                  <li>Surgery (General Surgery, Laparoscopic, Transplants, etc.)</li>
-                  <li>Specialized Departments (Cardiology, Neurology, Orthopedics, Gastroenterology, Pulmonology, etc.)</li>
-                </ul>
-              </li>
-              <li><strong>Diagnostic & Laboratory Services</strong>
-                <ul className="list-disc ml-6">
-                  <li>Pathology (Blood, Urine, Tissue testing)</li>
-                  <li>Radiology & Imaging (X-ray, CT scan, MRI, Ultrasound, Mammography)</li>
-                  <li>Endoscopy, ECG, EEG, etc.</li>
-                </ul>
-              </li>
-              <li><strong>Preventive & Outpatient Services</strong>
-                <ul className="list-disc ml-6">
-                  <li>Outpatient Department (OPD) consultations</li>
-                  <li>Vaccination & Immunization</li>
-                  <li>Health Check-ups / Preventive Screenings</li>
-                </ul>
-              </li>
-              <li><strong>Supportive & Nursing Services</strong>
-                <ul className="list-disc ml-6">
-                  <li>Inpatient wards (General, Private, Semi-private)</li>
-                  <li>Nursing care</li>
-                  <li>Physiotherapy & Rehabilitation</li>
-                  <li>Nutrition & Dietetics</li>
-                </ul>
-              </li>
-              <li><strong>Emergency & Ambulance Services</strong>
-                <ul className="list-disc ml-6">
-                  <li>24/7 Ambulance support</li>
-                  <li>Emergency surgery and first-aid</li>
-                  <li>Disaster management services</li>
-                </ul>
-              </li>
-              <li><strong>Pharmacy Services</strong>
-                <ul className="list-disc ml-6">
-                  <li>In-house pharmacy</li>
-                  <li>Prescription management</li>
-                </ul>
-              </li>
-              <li><strong>Administrative & Social Services</strong>
-                <ul className="list-disc ml-6">
-                  <li>Medical records & billing</li>
-                  <li>Patient counseling & social services</li>
-                  <li>Insurance and claim support</li>
-                </ul>
-              </li>
-            </ul>
-          </div>
+        </header>
+
+        <div className="services-grid">
+          {services.map((service, index) => (
+            <div key={index} className="service-card">
+              <h2>{service.title}</h2>
+              <ul>
+                {service.description.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
+              <button className="learn-more">Learn More</button>
+            </div>
+          ))}
         </div>
       </div>
     </div>

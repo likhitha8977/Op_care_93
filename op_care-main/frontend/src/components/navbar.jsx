@@ -18,10 +18,16 @@ const Navbar = () => {
         ) : (
           <>
             <li><Link to="/home">Home</Link></li>
-            <li><Link to="/dashboard">Dashboard</Link></li>
-            <li><Link to="/services">Services</Link></li>
-            <li><Link to="/bookings">Bookings</Link></li>
-            <li><Link to="/payment">Payment</Link></li>
+            {user.role === 'admin' && (
+              <li><Link to="/admin-dashboard">Admin Panel</Link></li>
+            )}
+            {user.role !== 'admin' && (
+              <>
+                <li><Link to="/services">Services</Link></li>
+                <li><Link to="/bookings">Bookings</Link></li>
+                <li><Link to="/payment">Payment</Link></li>
+              </>
+            )}
             <li><Link to="/profile">Profile</Link></li>
             <li><button className="logout-btn" onClick={() => { logout(); navigate('/signin'); }}>Logout</button></li>
           </>
@@ -30,6 +36,5 @@ const Navbar = () => {
     </nav>
   );
 };
-
 
 export default Navbar;
