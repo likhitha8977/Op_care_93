@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { UserContext } from "../context/UserContext";
 import Sidenav from "../components/Sidenav"; // Import the Sidenav
+import Payment from "../components/payment";
+import PatientAppointments from "./patient/PatientAppointments"; // Import the new PatientAppointments component
 import "../styles/profile.css";
 
 const Profile = () => {
@@ -50,18 +52,31 @@ const Profile = () => {
             notificationsRes,
             recordsRes,
           ] = await Promise.all([
-            fetch("/api/profile", { headers: { Authorization: `Bearer ${token}` } }).then((res) => res.json()),
-            fetch("/api/bookings", { headers: { Authorization: `Bearer ${token}` } }).then((res) => res.json()),
-            fetch("/api/opslips", { headers: { Authorization: `Bearer ${token}` } }).then((res) => res.json()),
-            fetch("/api/prescriptions", { headers: { Authorization: `Bearer ${token}` } }).then((res) => res.json()),
-            fetch("/api/notifications", { headers: { Authorization: `Bearer ${token}` } }).then((res) => res.json()),
-            fetch("/api/records", { headers: { Authorization: `Bearer ${token}` } }).then((res) => res.json()),
+            fetch("/api/profile", {
+              headers: { Authorization: `Bearer ${token}` },
+            }).then((res) => res.json()),
+            fetch("/api/bookings", {
+              headers: { Authorization: `Bearer ${token}` },
+            }).then((res) => res.json()),
+            fetch("/api/opslips", {
+              headers: { Authorization: `Bearer ${token}` },
+            }).then((res) => res.json()),
+            fetch("/api/prescriptions", {
+              headers: { Authorization: `Bearer ${token}` },
+            }).then((res) => res.json()),
+            fetch("/api/notifications", {
+              headers: { Authorization: `Bearer ${token}` },
+            }).then((res) => res.json()),
+            fetch("/api/records", {
+              headers: { Authorization: `Bearer ${token}` },
+            }).then((res) => res.json()),
           ]);
 
           const nextProfile = profileRes?.error ? user : profileRes;
           setProfile(nextProfile);
           setForm({
-            fullName: (nextProfile && nextProfile.fullName) || user.fullName || "",
+            fullName:
+              (nextProfile && nextProfile.fullName) || user.fullName || "",
             email: (nextProfile && nextProfile.email) || user.email || "",
             phone: (nextProfile && nextProfile.phone) || user.phone || "",
             height: (nextProfile && nextProfile.height) || user.height || "",
@@ -102,7 +117,8 @@ const Profile = () => {
 
   const handleEdit = () => setEditMode(true);
   const handleCancel = () => setEditMode(false);
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -152,7 +168,7 @@ const Profile = () => {
 
   return (
     <div className="profile-layout">
-      {!(user && user.role === 'admin') && (
+      {!(user && user.role === "admin") && (
         <Sidenav activeTab={activeTab} setActiveTab={setActiveTab} />
       )}
 
@@ -161,42 +177,94 @@ const Profile = () => {
           <div className="profile-details">
             {editMode ? (
               <form className="profile-form" onSubmit={handleSave}>
-                <label>Name:
-                  <input name="fullName" value={form.fullName} onChange={handleChange} />
+                <label>
+                  Name:
+                  <input
+                    name="fullName"
+                    value={form.fullName}
+                    onChange={handleChange}
+                  />
                 </label>
-                <label>Email:
-                  <input name="email" value={form.email} onChange={handleChange} />
+                <label>
+                  Email:
+                  <input
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                  />
                 </label>
-                <label>Phone:
-                  <input name="phone" value={form.phone} onChange={handleChange} />
+                <label>
+                  Phone:
+                  <input
+                    name="phone"
+                    value={form.phone}
+                    onChange={handleChange}
+                  />
                 </label>
-                <label>Height (cm):
-                  <input name="height" value={form.height} onChange={handleChange} />
+                <label>
+                  Height (cm):
+                  <input
+                    name="height"
+                    value={form.height}
+                    onChange={handleChange}
+                  />
                 </label>
-                <label>Weight (kg):
-                  <input name="weight" value={form.weight} onChange={handleChange} />
+                <label>
+                  Weight (kg):
+                  <input
+                    name="weight"
+                    value={form.weight}
+                    onChange={handleChange}
+                  />
                 </label>
                 <div className="buttons">
-                  <button type="submit" className="book-btn">Save</button>
-                  <button type="button" className="cancel-btn" onClick={handleCancel}>Cancel</button>
+                  <button type="submit" className="book-btn">
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    className="cancel-btn"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </button>
                 </div>
               </form>
             ) : (
               <>
-                {(() => { const display = profile || user; return (
-                  <>
-                    <p><strong>Name:</strong> {display?.fullName}</p>
-                    <p><strong>Email:</strong> {display?.email}</p>
-                    <p><strong>Phone:</strong> {display?.phone}</p>
-                    <p><strong>Role:</strong> {display?.role}</p>
-                    <p><strong>Height:</strong> {display?.height || "N/A"} cm</p>
-                    <p><strong>Weight:</strong> {display?.weight || "N/A"} kg</p>
-                  </>
-                ); })()}
+                {(() => {
+                  const display = profile || user;
+                  return (
+                    <>
+                      <p>
+                        <strong>Name:</strong> {display?.fullName}
+                      </p>
+                      <p>
+                        <strong>Email:</strong> {display?.email}
+                      </p>
+                      <p>
+                        <strong>Phone:</strong> {display?.phone}
+                      </p>
+                      <p>
+                        <strong>Role:</strong> {display?.role}
+                      </p>
+                      <p>
+                        <strong>Height:</strong> {display?.height || "N/A"} cm
+                      </p>
+                      <p>
+                        <strong>Weight:</strong> {display?.weight || "N/A"} kg
+                      </p>
+                    </>
+                  );
+                })()}
 
                 <h3 className="bmi-heading">Want to know your BMI?</h3>
                 {bmi ? (
-                  <p className={`bmi-result ${bmiCategory.replace(" ", "-").toLowerCase()}`}>
+                  <p
+                    className={`bmi-result ${bmiCategory
+                      .replace(" ", "-")
+                      .toLowerCase()}`}
+                  >
                     Your BMI: <strong>{bmi}</strong> ({bmiCategory})
                   </p>
                 ) : (
@@ -204,8 +272,12 @@ const Profile = () => {
                 )}
 
                 <div className="buttons">
-                  <button className="book-btn" onClick={handleEdit}>Edit</button>
-                  <button className="cancel-btn" onClick={logout}>Logout</button>
+                  <button className="book-btn" onClick={handleEdit}>
+                    Edit
+                  </button>
+                  <button className="cancel-btn" onClick={logout}>
+                    Logout
+                  </button>
                 </div>
               </>
             )}
@@ -214,12 +286,7 @@ const Profile = () => {
 
         {activeTab === "appointments" && (
           <div>
-            <h2>Appointments</h2>
-            <ul>
-              {appointments.length ? appointments.map((appt, idx) => (
-                <li key={idx}>{appt.date} - {appt.doctorName}</li>
-              )) : <li>No appointments available</li>}
-            </ul>
+            <PatientAppointments />
           </div>
         )}
 
@@ -227,9 +294,15 @@ const Profile = () => {
           <div>
             <h2>OP Slips</h2>
             <ul>
-              {opSlips.length ? opSlips.map((slip, idx) => (
-                <li key={idx}>Slip #{slip.slipId} - {slip.date}</li>
-              )) : <li>No OP Slips available</li>}
+              {opSlips.length ? (
+                opSlips.map((slip, idx) => (
+                  <li key={idx}>
+                    Slip #{slip.slipId} - {slip.date}
+                  </li>
+                ))
+              ) : (
+                <li>No OP Slips available</li>
+              )}
             </ul>
           </div>
         )}
@@ -238,9 +311,15 @@ const Profile = () => {
           <div>
             <h2>Prescriptions</h2>
             <ul>
-              {prescriptions.length ? prescriptions.map((rx, idx) => (
-                <li key={idx}>{rx.date} - {rx.medicine}</li>
-              )) : <li>No prescriptions available</li>}
+              {prescriptions.length ? (
+                prescriptions.map((rx, idx) => (
+                  <li key={idx}>
+                    {rx.date} - {rx.medicine}
+                  </li>
+                ))
+              ) : (
+                <li>No prescriptions available</li>
+              )}
             </ul>
           </div>
         )}
@@ -249,9 +328,13 @@ const Profile = () => {
           <div>
             <h2>Notifications</h2>
             <ul>
-              {notifications.length ? notifications.map((note, idx) => (
-                <li key={idx}>{note.message}</li>
-              )) : <li>No notifications</li>}
+              {notifications.length ? (
+                notifications.map((note, idx) => (
+                  <li key={idx}>{note.message}</li>
+                ))
+              ) : (
+                <li>No notifications</li>
+              )}
             </ul>
           </div>
         )}
@@ -260,12 +343,20 @@ const Profile = () => {
           <div>
             <h2>Previous Records</h2>
             <ul>
-              {records.length ? records.map((rec, idx) => (
-                <li key={idx}>{rec.date} - {rec.description}</li>
-              )) : <li>No previous records</li>}
+              {records.length ? (
+                records.map((rec, idx) => (
+                  <li key={idx}>
+                    {rec.date} - {rec.description}
+                  </li>
+                ))
+              ) : (
+                <li>No previous records</li>
+              )}
             </ul>
           </div>
         )}
+
+        {activeTab === "payments" && <Payment />}
       </main>
     </div>
   );

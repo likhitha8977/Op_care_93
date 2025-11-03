@@ -24,6 +24,9 @@ const Sidenav = ({ activeTab, setActiveTab }) => {
         <li className={activeTab === "records" ? "active" : ""} onClick={() => setActiveTab("records")}>
           Previous Records
         </li>
+        <li className={activeTab === "payments" ? "active" : ""} onClick={() => setActiveTab("payments")}>
+          Payments
+        </li>
       </ul>
     </aside>
   );

@@ -1,29 +1,24 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
+/* Auth page specific styles */
+.auth-page {
   font-family: "Poppins", sans-serif;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   font-size: 18px;
-  line-height: 1.6; /* more vertical spacing */
+  line-height: 1.6;
 }
 
-.login {
+.auth-page .login {
   color: rgb(27, 109, 69);
   font-weight: bold;
-  text-decoration: none; /* remove underline */
+  text-decoration: none;
   font-size: 20px;
 }
 
-.login:hover {
-  text-decoration: underline; /*  underline only on hover */
+.auth-page .login:hover {
+  text-decoration: underline;
 }
 
 /* Header */

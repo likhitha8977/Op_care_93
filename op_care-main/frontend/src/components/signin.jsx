@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { Link, useNavigate } from "react-router-dom";
+import "../styles/signin.css";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -16,6 +17,20 @@ export default function SignIn() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
+
+      // Check if we got a response and if it has content
+      if (!res.ok) {
+        let errorMessage = "Login failed";
+        try {
+          const errorData = await res.json();
+          errorMessage = errorData.message || errorData.error || errorMessage;
+        } catch (jsonError) {
+          // If JSON parsing fails, use status text
+          errorMessage = res.statusText || errorMessage;
+        }
+        alert(`Login error: ${errorMessage}`);
+        return;
+      }
 
       const data = await res.json();
 
@@ -42,12 +57,22 @@ export default function SignIn() {
         alert(data.error || "Login failed");
       }
     } catch (err) {
-      alert("Login error: " + err.message);
+      console.error("Login error:", err);
+      let errorMessage = "Login failed";
+      if (err.message.includes("JSON")) {
+        errorMessage = "Server response error. Please try again.";
+      } else if (err.message.includes("fetch")) {
+        errorMessage =
+          "Cannot connect to server. Please check your connection.";
+      } else {
+        errorMessage = err.message;
+      }
+      alert("Login error: " + errorMessage);
     }
   };
 
   return (
-    <>
+    <div className="auth-page">
       <main className="auth-wrapper">
         <div className="auth-card">
           <div className="auth-image">
@@ -135,6 +160,6 @@ export default function SignIn() {
           <p>&copy; 2025 OPcare. All Rights Reserved.</p>
         </div>
       </footer>
-    </>
+    </div>
   );
 }

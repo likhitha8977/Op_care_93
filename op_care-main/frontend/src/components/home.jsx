@@ -6,12 +6,16 @@ import "../styles/home.css";
 function Home() {
   const { user } = useContext(UserContext);
   const targetPath = user
-    ? (user.role === 'admin' ? '/admin-dashboard' : user.role === 'doctor' ? '/doctor' : '/signin')
-    : '/signin';
+    ? user.role === "admin"
+      ? "/admin-dashboard"
+      : user.role === "doctor"
+      ? "/doctor"
+      : "/signin"
+    : "/signin";
   return (
-    <div>
+    <div className="home-page">
       {/* Header */}
-  {/* Header removed, global Navbar used */}
+      {/* Header removed, global Navbar used */}
 
       {/* Hero Section */}
       <section className="hero">

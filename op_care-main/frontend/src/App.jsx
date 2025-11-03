@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import "./styles/signin.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import SignUp from "./components/signup.jsx";
 import SignIn from "./components/signin.jsx";
 import Home from "./components/home.jsx";
 import AdminDashboard from "./components/adminDashboard.jsx";
 import Profile from "./components/profile.jsx";
 import DoctorLayout from "./components/doctor/DoctorLayout.jsx";
+import PatientLayout from "./components/patient/PatientLayout.jsx";
 import Payment from "./components/payment.jsx";
 import NotFound from "./components/notfound.jsx";
 import Services from "./components/services.jsx";
@@ -21,23 +23,36 @@ export default function App() {
   const { user } = React.useContext(UserContext);
   const location = useLocation();
   // Hide navbar entirely for doctors; for admins, hide only on /home
-  const hideNavbar = (user && user.role === 'doctor') || (user && user.role === 'admin' && location.pathname === '/home');
+  const hideNavbar =
+    (user && user.role === "doctor") ||
+    (user && user.role === "admin" && location.pathname === "/home");
 
   // Role-based route protection
   const ProtectedRoute = ({ children, requiredRole }) => {
     if (!user) {
       return <Navigate to="/signin" replace />;
     }
-    
+
     if (requiredRole && user.role !== requiredRole) {
       return <Navigate to="/home" replace />;
     }
-    
+
     return children;
   };
 
   return (
     <div className="app">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       {!hideNavbar && <Navbar />}
       {!hideNavbar && (
         <Notification
@@ -50,24 +65,24 @@ export default function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
-        <Route 
-          path="/admin-dashboard" 
+        <Route
+          path="/admin-dashboard"
           element={
             <ProtectedRoute requiredRole="admin">
               <AdminDashboard />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/doctor" 
+        <Route
+          path="/doctor"
           element={
             <ProtectedRoute requiredRole="doctor">
               <DoctorLayout />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/doctor/*" 
+        <Route
+          path="/doctor/*"
           element={
             <ProtectedRoute requiredRole="doctor">
               <DoctorLayout />
@@ -75,8 +90,30 @@ export default function App() {
           }
         />
         <Route path="/services" element={<Services />} />
-        <Route path="/bookings" element={<Bookings setNotification={setNotification} />} />
-        <Route path="/profile" element={user && user.role === 'doctor' ? <Navigate to="/doctor" replace /> : <Profile />} />
+        <Route
+          path="/bookings"
+          element={<Bookings setNotification={setNotification} />}
+        />
+        <Route
+          path="/profile"
+          element={
+            user && user.role === "doctor" ? (
+              <Navigate to="/doctor" replace />
+            ) : user && user.role === "patient" ? (
+              <PatientLayout />
+            ) : (
+              <Profile />
+            )
+          }
+        />
+        <Route
+          path="/patient"
+          element={
+            <ProtectedRoute requiredRole="patient">
+              <PatientLayout />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/myappointments" element={<MyAppointments />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="*" element={<NotFound />} />

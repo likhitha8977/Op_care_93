@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { Link, useNavigate } from "react-router-dom";
+import "../styles/signin.css";
 
 export default function SignUp() {
   const [fullName, setFullName] = useState("");
@@ -27,12 +28,18 @@ export default function SignUp() {
 
       const text = await res.text();
       let data;
-      try { data = JSON.parse(text); } catch { data = { message: text }; }
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = { message: text };
+      }
       if (res.ok) {
         alert("Signup successful! Please login.");
         navigate("/signin");
       } else {
-        alert(data.error || data.message || `Signup failed (status ${res.status})`);
+        alert(
+          data.error || data.message || `Signup failed (status ${res.status})`
+        );
       }
     } catch (err) {
       alert("Signup error: " + err.message);
@@ -40,7 +47,7 @@ export default function SignUp() {
   };
 
   return (
-    <>
+    <div className="auth-page">
       {/* Header removed, global Navbar used */}
 
       <main className="auth-wrapper">
@@ -150,6 +157,6 @@ export default function SignUp() {
       </main>
 
       <footer>&copy; 2025 OPcare. All Rights Reserved.</footer>
-    </>
+    </div>
   );
 }
