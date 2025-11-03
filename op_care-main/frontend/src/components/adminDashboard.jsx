@@ -4,6 +4,7 @@ import "../styles/adminDashboard.css";
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
+  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalAppointments: 0,
@@ -69,35 +70,121 @@ const AdminDashboard = () => {
 
   const loadAll = async () => {
     try {
+      setLoading(true);
+      console.log("Loading admin data...");
+
       const [statsRes, hospRes, usersRes, apptRes, opsRes, notesRes] =
-        await Promise.all([
-          fetch("/api/admin/stats", { headers: authHeaders() }).then((r) =>
-            r.json()
+        await Promise.allSettled([
+          fetch("/api/admin/stats", { headers: authHeaders() }).then((r) => {
+            if (!r.ok) throw new Error(`Stats API failed: ${r.status}`);
+            return r.json();
+          }),
+          fetch("/api/admin/hospitals", { headers: authHeaders() }).then(
+            (r) => {
+              if (!r.ok) throw new Error(`Hospitals API failed: ${r.status}`);
+              return r.json();
+            }
           ),
-          fetch("/api/admin/hospitals", { headers: authHeaders() }).then((r) =>
-            r.json()
-          ),
-          fetch("/api/admin/users", { headers: authHeaders() }).then((r) =>
-            r.json()
-          ),
+          fetch("/api/admin/users", { headers: authHeaders() }).then((r) => {
+            if (!r.ok) throw new Error(`Users API failed: ${r.status}`);
+            return r.json();
+          }),
           fetch("/api/admin/appointments", { headers: authHeaders() }).then(
-            (r) => r.json()
+            (r) => {
+              if (!r.ok)
+                throw new Error(`Appointments API failed: ${r.status}`);
+              return r.json();
+            }
           ),
           fetch("/api/admin/operations", { headers: authHeaders() })
-            .then((r) => r.json())
+            .then((r) => {
+              if (!r.ok) throw new Error(`Operations API failed: ${r.status}`);
+              return r.json();
+            })
             .catch(() => []),
           fetch("/api/admin/notifications", { headers: authHeaders() })
-            .then((r) => r.json())
+            .then((r) => {
+              if (!r.ok)
+                throw new Error(`Notifications API failed: ${r.status}`);
+              return r.json();
+            })
             .catch(() => []),
         ]);
-      setStats(statsRes || {});
-      setHospitals(Array.isArray(hospRes) ? hospRes : []);
-      setUsers(Array.isArray(usersRes) ? usersRes : []);
-      setAppointments(Array.isArray(apptRes) ? apptRes : []);
-      setOperations(Array.isArray(opsRes) ? opsRes : []);
-      setNotificationsList(Array.isArray(notesRes) ? notesRes : []);
+
+      // Handle stats
+      if (statsRes.status === "fulfilled") {
+        setStats(statsRes.value || {});
+      } else {
+        console.error("Failed to load stats:", statsRes.reason);
+        setStats({});
+      }
+
+      // Handle hospitals
+      if (hospRes.status === "fulfilled") {
+        const hospitalData = Array.isArray(hospRes.value) ? hospRes.value : [];
+        setHospitals(hospitalData);
+        console.log("Hospitals loaded:", hospitalData.length);
+      } else {
+        console.error("Failed to load hospitals:", hospRes.reason);
+        setHospitals([]);
+      }
+
+      // Handle users
+      if (usersRes.status === "fulfilled") {
+        const userData = Array.isArray(usersRes.value) ? usersRes.value : [];
+        setUsers(userData);
+        console.log("Users loaded:", userData.length);
+      } else {
+        console.error("Failed to load users:", usersRes.reason);
+        setUsers([]);
+      }
+
+      // Handle appointments
+      if (apptRes.status === "fulfilled") {
+        const appointmentData = Array.isArray(apptRes.value)
+          ? apptRes.value
+          : [];
+        setAppointments(appointmentData);
+        console.log("Appointments loaded:", appointmentData.length);
+      } else {
+        console.error("Failed to load appointments:", apptRes.reason);
+        setAppointments([]);
+      }
+
+      // Handle operations
+      if (opsRes.status === "fulfilled") {
+        const operationData = Array.isArray(opsRes.value) ? opsRes.value : [];
+        setOperations(operationData);
+        console.log("Operations loaded:", operationData.length);
+      } else {
+        console.error("Failed to load operations:", opsRes.reason);
+        setOperations([]);
+      }
+
+      // Handle notifications
+      if (notesRes.status === "fulfilled") {
+        const notificationData = Array.isArray(notesRes.value)
+          ? notesRes.value
+          : [];
+        setNotificationsList(notificationData);
+        console.log("Notifications loaded:", notificationData.length);
+      } else {
+        console.error("Failed to load notifications:", notesRes.reason);
+        setNotificationsList([]);
+      }
+
+      console.log("Admin data loading completed");
     } catch (e) {
       console.error("Admin data load failed", e);
+      // Set empty arrays to prevent UI errors
+      setStats({});
+      setHospitals([]);
+      setUsers([]);
+      setAppointments([]);
+      setOperations([]);
+      setNotificationsList([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -172,32 +259,68 @@ const AdminDashboard = () => {
 
   const saveHospital = async (h) => {
     try {
+      if (!h.name.trim()) {
+        alert("Hospital name is required");
+        return;
+      }
+      if (!h.address.trim()) {
+        alert("Hospital address is required");
+        return;
+      }
+
       const payload = {
-        name: h.name,
-        address: h.address,
-        phone: h.phone,
-        email: h.email,
+        name: h.name.trim(),
+        address: h.address.trim(),
+        phone: h.phone.trim(),
+        email: h.email.trim(),
       };
-      await fetch(`/api/admin/hospitals/${h._id}`, {
+
+      const response = await fetch(`/api/admin/hospitals/${h._id}`, {
         method: "PUT",
         headers: authHeaders(),
         body: JSON.stringify(payload),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || errorData.message || "Failed to update hospital"
+        );
+      }
+
+      const result = await response.json();
+      console.log("Hospital updated successfully:", result);
+
       await loadAll();
+      alert(`Hospital "${h.name}" updated successfully!`);
     } catch (e) {
       console.error("Failed to update hospital", e);
+      alert("Failed to update hospital: " + e.message);
     }
   };
 
   const removeHospital = async (id) => {
     try {
-      await fetch(`/api/admin/hospitals/${id}`, {
+      const response = await fetch(`/api/admin/hospitals/${id}`, {
         method: "DELETE",
         headers: authHeaders(),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || errorData.message || "Failed to delete hospital"
+        );
+      }
+
+      const result = await response.json();
+      console.log("Hospital deleted successfully:", result);
+
       await loadAll();
+      alert("Hospital deleted successfully!");
     } catch (e) {
       console.error("Failed to delete hospital", e);
+      alert("Failed to delete hospital: " + e.message);
     }
   };
 
@@ -427,39 +550,71 @@ const AdminDashboard = () => {
 
   const createHospital = async () => {
     try {
-      await fetch("/api/admin/hospitals", {
+      // Validate input fields
+      if (!newHospital.name.trim()) {
+        alert("Hospital name is required");
+        return;
+      }
+      if (!newHospital.address.trim()) {
+        alert("Hospital address is required");
+        return;
+      }
+
+      const response = await fetch("/api/admin/hospitals", {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify(newHospital),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || errorData.message || "Failed to create hospital"
+        );
+      }
+
+      const result = await response.json();
+      console.log("Hospital created successfully:", result);
+
+      // Clear the form
       setNewHospital({ name: "", address: "", phone: "", email: "" });
+
+      // Reload all data to show the new hospital
       await loadAll();
+
+      // Show success message
+      alert(
+        `Hospital "${result.name || newHospital.name}" created successfully!`
+      );
     } catch (e) {
       console.error("Failed to create hospital", e);
+      alert("Failed to create hospital: " + e.message);
     }
   };
 
   const renderManageHospitals = () => (
     <div className="manage-hospitals">
       <div className="section-header">
-        <h2>Manage Hospitals</h2>
+        <h2>Manage Hospitals ({hospitals.length})</h2>
         <div
           className="profile-form"
           style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}
         >
           <input
-            placeholder="Name"
+            placeholder="Hospital Name *"
             value={newHospital.name}
             onChange={(e) =>
               setNewHospital({ ...newHospital, name: e.target.value })
             }
+            required
           />
           <input
-            placeholder="Address"
+            placeholder="Address *"
             value={newHospital.address}
             onChange={(e) =>
               setNewHospital({ ...newHospital, address: e.target.value })
             }
+            required
           />
           <input
             placeholder="Phone"
@@ -475,76 +630,155 @@ const AdminDashboard = () => {
               setNewHospital({ ...newHospital, email: e.target.value })
             }
           />
-          <button className="add-btn" onClick={createHospital}>
+          <button
+            className="add-btn"
+            onClick={createHospital}
+            disabled={!newHospital.name.trim() || !newHospital.address.trim()}
+            style={{
+              opacity:
+                !newHospital.name.trim() || !newHospital.address.trim()
+                  ? 0.6
+                  : 1,
+              cursor:
+                !newHospital.name.trim() || !newHospital.address.trim()
+                  ? "not-allowed"
+                  : "pointer",
+            }}
+          >
             + Add Hospital
           </button>
         </div>
       </div>
-      <div className="hospitals-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Address</th>
-              <th>Phone</th>
-              <th>Email</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {hospitals.map((hospital) => (
-              <tr key={hospital._id}>
-                <td>
-                  <input
-                    defaultValue={hospital.name}
-                    onBlur={(e) => {
-                      hospital.name = e.target.value;
-                    }}
-                  />
-                </td>
-                <td>
-                  <input
-                    defaultValue={hospital.address}
-                    onBlur={(e) => {
-                      hospital.address = e.target.value;
-                    }}
-                  />
-                </td>
-                <td>
-                  <input
-                    defaultValue={hospital.phone}
-                    onBlur={(e) => {
-                      hospital.phone = e.target.value;
-                    }}
-                  />
-                </td>
-                <td>
-                  <input
-                    defaultValue={hospital.email}
-                    onBlur={(e) => {
-                      hospital.email = e.target.value;
-                    }}
-                  />
-                </td>
-                <td>
-                  <button
-                    className="action-btn edit"
-                    onClick={() => saveHospital(hospital)}
-                  >
-                    Save
-                  </button>
-                  <button
-                    className="action-btn delete"
-                    onClick={() => removeHospital(hospital._id)}
-                  >
-                    Delete
-                  </button>
-                </td>
+
+      {hospitals.length === 0 ? (
+        <div
+          style={{
+            padding: "40px",
+            textAlign: "center",
+            backgroundColor: "white",
+            borderRadius: "8px",
+            margin: "20px 0",
+          }}
+        >
+          <div style={{ fontSize: "48px", marginBottom: "10px" }}>🏥</div>
+          <h3>No hospitals found</h3>
+          <p style={{ color: "#666", marginBottom: "20px" }}>
+            Add your first hospital using the form above to get started.
+          </p>
+        </div>
+      ) : (
+        <div className="hospitals-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {hospitals.map((hospital) => (
+                <tr key={hospital._id}>
+                  <td>
+                    <input
+                      defaultValue={hospital.name}
+                      onBlur={(e) => {
+                        hospital.name = e.target.value;
+                      }}
+                      style={{
+                        fontWeight: "bold",
+                        border: "1px solid #ddd",
+                        padding: "5px",
+                        borderRadius: "4px",
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      defaultValue={hospital.address}
+                      onBlur={(e) => {
+                        hospital.address = e.target.value;
+                      }}
+                      style={{
+                        border: "1px solid #ddd",
+                        padding: "5px",
+                        borderRadius: "4px",
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      defaultValue={hospital.phone}
+                      onBlur={(e) => {
+                        hospital.phone = e.target.value;
+                      }}
+                      style={{
+                        border: "1px solid #ddd",
+                        padding: "5px",
+                        borderRadius: "4px",
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      defaultValue={hospital.email}
+                      onBlur={(e) => {
+                        hospital.email = e.target.value;
+                      }}
+                      style={{
+                        border: "1px solid #ddd",
+                        padding: "5px",
+                        borderRadius: "4px",
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <button
+                      className="action-btn edit"
+                      onClick={() => saveHospital(hospital)}
+                      style={{
+                        backgroundColor: "#28a745",
+                        color: "white",
+                        border: "none",
+                        padding: "5px 10px",
+                        borderRadius: "4px",
+                        marginRight: "5px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Save
+                    </button>
+                    <button
+                      className="action-btn delete"
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            `Are you sure you want to delete "${hospital.name}"?`
+                          )
+                        ) {
+                          removeHospital(hospital._id);
+                        }
+                      }}
+                      style={{
+                        backgroundColor: "#dc3545",
+                        color: "white",
+                        border: "none",
+                        padding: "5px 10px",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 
